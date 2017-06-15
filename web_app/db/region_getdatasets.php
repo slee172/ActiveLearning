@@ -36,7 +36,7 @@
 	$dbConn = guestConnect();
 
 	if( $result = mysqli_query($dbConn, "SELECT name,features_file from datasets
-		 where not features_file like '%spfeatures%' order by name") ) {
+		where features_file like '%spfeatures%' order by name") ) {
 
 		$jsonData = array();
 		while( $array = mysqli_fetch_row($result) ) {
