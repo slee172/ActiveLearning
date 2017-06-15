@@ -59,6 +59,8 @@
 
 #define CMD_HEATMAP		"heatMap"
 #define CMD_ALLHEATMAPS	"allHeatMaps"
+#define CMD_SREGIONHEATMAP		"sregionHeatMap"
+#define CMD_SREGIONALLHEATMAPS	"sregionallHeatMaps"
 
 #define CMD_STATUS		"sysStatus"
 
