@@ -108,6 +108,20 @@ CREATE TABLE boundaries (
 
 
 
+CREATE TABLE sregionboundaries (
+	id int(11) NOT NULL AUTO_INCREMENT,
+	slide varchar(80) NOT NULL,
+	centroid_x decimal(10,1) NOT NULL,
+	centroid_y decimal(10,1) NOT NULL,
+	boundary varchar(4096) NOT NULL,
+	PRIMARY KEY(slide, centroid_x, centroid_y),
+	UNIQUE KEY (id)
+) ENGINE=InnoDB;
+
+
+
+
+
 CREATE TABLE `test_sets` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(80) NOT NULL,
