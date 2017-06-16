@@ -6,10 +6,9 @@
 	$port = 10000;
 	$host = "localhost";
 
-	
-	#
-	#	IIP server 
-	#
-	$IIPServer = "http://170.140.61.157/fcgi-bin/iipsrv.fcgi?";			
-?>
 
+	#
+	#	IIP server
+	#
+	$IIPServer = "http://localhost/fcgi-bin/iipsrv.fcgi?";			
+?>
