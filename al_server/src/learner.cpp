@@ -2238,7 +2238,7 @@ bool Learner::GenHeatmap(const int sock, json_t *obj)
 #define GRID_SIZE	40
 #define HIST_BINS	20
 #define UNCERT_PERCENTILE	0.90f
-#define SREGION_GRID_SIZE	40
+#define SREGION_GRID_SIZE	100
 
 
 
@@ -2876,50 +2876,20 @@ void Learner::HeatmapWorkerSRegion(float *slideScores, float *centX, float *cent
 		int		fX = (ceil((float)width / (float)SREGION_GRID_SIZE)) + 1, fY = (ceil((float)height / (float)SREGION_GRID_SIZE)) + 1,
 				curX, curY;
 		Mat		uncertainMap = Mat::zeros(fY, fX, CV_32F), classMap = Mat::zeros(fY, fX, CV_32F),
-				densityMap = Mat::zeros(fY, fX, CV_32F), grayUncertain(fY, fX, CV_8UC1),
-				grayClass(fY, fX, CV_8UC1);
+ 				densityMap = Mat::zeros(fY, fX, CV_32F), grayUncertain(fY, fX, CV_8UC1),	grayClass(fY, fX, CV_8UC1);
 		vector<float> scoreVec;
-
-
-		// revise uncertainMap using stddev
-		Mat	tempScores = Mat::zeros(1, numObjs, CV_32F);
-		for(int obj = 0; obj < numObjs; obj++) {
-					tempScores.at<float>(0, obj) = slideScores[obj];
-		}
-
-		Scalar mean, stddev;
-		float zscore, scale;
-		scale = 1.0;
-		meanStdDev(tempScores, mean, stddev);
-
-		for(int obj = 0; obj < numObjs; obj++) {
-
-			zscore = (tempScores.at<float>(0, obj) - mean[0])/stddev[0];
-			//gLogger->LogMsg(EvtLogger::Evt_INFO, "results = %f", results[i]);
-			if (zscore > scale){
-					tempScores.at<float>(0, obj) = 1.0;
-			}
-			else if (zscore < -scale){
-					tempScores.at<float>(0, obj)= -1.0;
-			}
-			else{
-					tempScores.at<float>(0, obj) = zscore;
-			}
-		}
-
 
 		for(int obj = 0; obj < numObjs; obj++) {
 			curX = ceil(centX[obj] / (float)SREGION_GRID_SIZE);
 			curY = ceil(centY[obj] / (float)SREGION_GRID_SIZE);
 
-			uncertainMap.at<float>(curY, curX) = max(uncertainMap.at<float>(curY, curX), 1 - abs(tempScores.at<float>(0, obj)));
+			uncertainMap.at<float>(curY, curX) = max(uncertainMap.at<float>(curY, curX), 1 - abs(slideScores[obj]));
 			if( slideScores[obj] >= 0 ) {
 				classMap.at<float>(curY, curX) += 1.0f;
 			}
 			densityMap.at<float>(curY, curX) += 1.0f;
 			scoreVec.push_back(1 - abs(slideScores[obj]));
 		}
-
 
 		for(int row = 0; row < fY; row++) {
 			for(int col = 0; col < fX; col++) {
@@ -2942,45 +2912,35 @@ void Learner::HeatmapWorkerSRegion(float *slideScores, float *centX, float *cent
 
 		// The min and max scores returned are the "blurred" veraion. Only
 		// the median is the raw score. (calculated later)
-		normalize(uncertainMap, grayUncertain, 0, 255, cv::NORM_MINMAX, CV_8UC1);
-		//minMaxLoc(uncertainMap, uncertMin, uncertMax);
+		minMaxLoc(uncertainMap, uncertMin, uncertMax);
 		minMaxLoc(classMap, classMin, classMax);
+		//normalize(uncertainMap, grayUncertain, 0, 255, cv::NORM_MINMAX, CV_8UC1);
 
-		/*
+
 		range = *uncertMax - *uncertMin;
-		gLogger->LogMsg(EvtLogger::Evt_INFO, "range %f", range);
-		if (range != 0) {
+		//gLogger->LogMsg(EvtLogger::Evt_INFO, "range %f", range);
+		memset(uncertHist, 0, HIST_BINS * sizeof(int));
 
-				memset(uncertHist, 0, HIST_BINS * sizeof(int));
-
-				for(int row = 0; row < fY; row++) {
-					for(int col = 0; col < fX; col++) {
-
-						index = (int)min(uncertainMap.at<float>(row, col) / range * (float)HIST_BINS, (float)(HIST_BINS - 1));
-						uncertHist[index]++;
-					}
-				}
-
-				total = 0;
-				for(index = 0; index < HIST_BINS; index++) {
-					total += uncertHist[index];
-//					gLogger->LogMsg(EvtLogger::Evt_INFO, "total %d", total);
-					if( total > (int)(UNCERT_PERCENTILE * (float)fY * (float)fX) )
-						break;
-				}
-				uncertNorm = (float)index / (float)HIST_BINS;
-		}
-
-		else {
-				uncertNorm = 1.0;
-		}
-
-		gLogger->LogMsg(EvtLogger::Evt_INFO, "uncertNorm %f", uncertNorm);
-		*/
 		for(int row = 0; row < fY; row++) {
 			for(int col = 0; col < fX; col++) {
 
-				//grayUncertain.at<uchar>(row, col) = min(255.0 * uncertainMap.at<float>(row, col) / uncertNorm, 255.0);
+				index = (int)min(uncertainMap.at<float>(row, col) / range * (float)HIST_BINS, (float)(HIST_BINS - 1));
+				uncertHist[index]++;
+			}
+		}
+
+		total = 0;
+		for(index = 0; index < HIST_BINS; index++) {
+			total += uncertHist[index];
+			if( total > (int)(UNCERT_PERCENTILE * (float)fY * (float)fX) )
+				break;
+		}
+		uncertNorm = (float)index / (float)HIST_BINS;
+
+		for(int row = 0; row < fY; row++) {
+			for(int col = 0; col < fX; col++) {
+
+				grayUncertain.at<uchar>(row, col) = min(255.0 * uncertainMap.at<float>(row, col)/ uncertNorm, 255.0);
 				grayClass.at<uchar>(row, col) = min(255.0 * classMap.at<float>(row, col) / *classMax, 255.0);
 			}
 		}
