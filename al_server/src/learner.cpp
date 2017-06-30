@@ -2238,7 +2238,7 @@ bool Learner::GenHeatmap(const int sock, json_t *obj)
 #define GRID_SIZE	40
 #define HIST_BINS	20
 #define UNCERT_PERCENTILE	0.90f
-#define SREGION_GRID_SIZE	100
+#define SREGION_GRID_SIZE	40
 
 
 
@@ -2876,7 +2876,8 @@ void Learner::HeatmapWorkerSRegion(float *slideScores, float *centX, float *cent
 		int		fX = (ceil((float)width / (float)SREGION_GRID_SIZE)) + 1, fY = (ceil((float)height / (float)SREGION_GRID_SIZE)) + 1,
 				curX, curY;
 		Mat		uncertainMap = Mat::zeros(fY, fX, CV_32F), classMap = Mat::zeros(fY, fX, CV_32F),
- 				densityMap = Mat::zeros(fY, fX, CV_32F), grayUncertain(fY, fX, CV_8UC1),	grayClass(fY, fX, CV_8UC1);
+				densityMap = Mat::zeros(fY, fX, CV_32F), grayUncertain(fY, fX, CV_8UC1),
+				grayClass(fY, fX, CV_8UC1);
 		vector<float> scoreVec;
 
 		for(int obj = 0; obj < numObjs; obj++) {
