@@ -779,8 +779,8 @@ function updateBoundColors(obj) {
 
 		if( bound != null ) {
 			if (fixes['samples'][cell]['id'] == obj['id']){
-				bound.setAttribute('stroke', 'red');
-				bound.setAttribute('fill', 'red');
+				bound.setAttribute('stroke', 'yellow');
+				bound.setAttribute('fill', 'yellow');
 			}
 		}
 	}
@@ -805,7 +805,7 @@ function undoBoundColors(obj) {
 					bound.setAttribute('fill', 'lime');
 				} else if( fixes['samples'][cell]['label'] == 1 ) {
 					bound.setAttribute('stroke', 'lightgrey');
-					bound.setAttribute('fill', 'lime');
+					bound.setAttribute('fill', 'lightgrey');
 				}
 			}
 		}
@@ -850,7 +850,7 @@ function nucleiSelect() {
 							} else if( cell.getAttribute('stroke') === "lightgrey" ) {
 								obj['label'] = 1;
 							// if the color of the selected cell is yellow
-						}	else if( cell.getAttribute('stroke') === "red" ) {
+						}	else if( cell.getAttribute('stroke') === "yellow" ) {
 							    // find a cell with the same id
 									for( cell in fixes['samples'] ) {
 										if (fixes['samples'][cell]['id'] == obj['id']){
