@@ -29,7 +29,7 @@ import sys
 import string
 import numpy as np
 
-dims = 48
+dims = 64
 
 
 if len(sys.argv) != 2:
@@ -47,15 +47,15 @@ for nuclei in data:
 
 	#
 	##	Check for valid features, skip if not
-	#	
+	#
 	objFeatures = np.array([float(i) for i in items[5:dims + 5]])
 	if np.isnan(np.sum(objFeatures)) == True:
 		continue
-			
+
 	#
 	# Remove extra from slide name
 	nameSplit = string.split(items[0], '.')
-	
+
 	if float(items[3]) == 40.0:
 		#
 		#	Need to adjust for 40x slides by multiplying by 2
@@ -63,7 +63,7 @@ for nuclei in data:
 		x = float(items[1]) * 2.0
 		y = float(items[2]) * 2.0
 
-		print nameSplit[0], "\t", x, "\t", y, "\t", 
+		print nameSplit[0], "\t", x, "\t", y, "\t",
 		vertices = string.split(items[len(items) - 1], ';')
 
 		#
@@ -90,8 +90,5 @@ for nuclei in data:
 			coords = string.split(point, ',')
 			if len(coords) == 2:
 				print point[0:point.index('.')] + point[point.index('.')+2:-2],
-	
+
 		print
-
-
-
