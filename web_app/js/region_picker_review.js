@@ -206,7 +206,7 @@ viewer.addHandler('close', function(event) {
 //
 function genReview() {
   $.ajax({
-    url: "php/pickerReviewSamples.php",
+    url: "php/region_pickerReviewSamples.php",
     data: "",
     dataType: "json",
     success: function(data) {
