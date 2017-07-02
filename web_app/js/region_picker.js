@@ -121,7 +121,7 @@ $(function() {
 
 		if( displaySeg ) {
 
-			if( statusObj.scaleFactor() > 0.5 ) {
+			if( statusObj.scaleFactor() > 0.2 ) {
 				$('.overlaySvg').css('visibility', 'visible');
 				var centerX = statusObj.dataportLeft() +
 							  ((statusObj.dataportRight() - statusObj.dataportLeft()) / 2);
@@ -346,7 +346,7 @@ function onImageViewChanged(event) {
 //
 function updateSeg() {
 
-	if( statusObj.scaleFactor() > 0.5 ) {
+	if( statusObj.scaleFactor() > 0.2 ) {
 
 		var left, right, top, bottom, width, height;
 
@@ -403,6 +403,8 @@ function updateSeg() {
 						ele.setAttribute('points', data[cell][0]);
 						ele.setAttribute('id', 'N' + data[cell][1]);
 						ele.setAttribute('stroke', data[cell][2]);
+						ele.setAttribute('stroke-width', 4);
+						ele.setAttribute("stroke-dasharray", "5,5");
 						ele.setAttribute('fill', 'none');
 
 						segGrp.appendChild(ele);
@@ -537,10 +539,10 @@ function nucleiSelect() {
 							labelTag = "#label_" + statusObj.totalSel(), loc;
 
 						$(box).show();
-						centX = (sample['centX'] - (25 * sample['scale'])) / sample['maxX'];
-						centY = (sample['centY'] - (25 * sample['scale'])) / sample['maxY'];
-						sizeX = (50.0 * sample['scale']) / sample['maxX'];
-						sizeY = (50.0 * sample['scale']) / sample['maxY'];
+						centX = (sample['centX'] - (64 * sample['scale'])) / sample['maxX'];
+						centY = (sample['centY'] - (64 * sample['scale'])) / sample['maxY'];
+						sizeX = (128.0 * sample['scale']) / sample['maxX'];
+						sizeY = (128.0 * sample['scale']) / sample['maxY'];
 						loc = centX+","+centY+","+sizeX+","+sizeY;
 
 						var thumbNail = IIPServer+"FIF="+pyramids[$('#slideSel').prop('selectedIndex')]+
@@ -647,6 +649,8 @@ function updateBoundColors() {
 
 		if( bound != null ) {
 			bound.setAttribute('stroke', 'yellow');
+			bound.setAttribute('fill', 'yellow');
+			bound.setAttribute("fill-opacity", "0.2");
 		}
 	}
 }
@@ -696,6 +700,8 @@ function onMouseLeave(event) {
 //	our own with a timer.
 //
 function onMouseClick(event) {
+
+	event.preventDefaultAction = true;
 
 	clickCount++;
 	if( clickCount === 1 ) {
