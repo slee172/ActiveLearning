@@ -1191,7 +1191,7 @@ bool Picker::RemoveIgnored(void)
 		if( m_labels[i] == 0 ) {
 			newLength--;
 			while( m_labels[newLength] == 0 && newLength > i ) {
-				// Make sure the sample we are swapping is not to be 
+				// Make sure the sample we are swapping is not to be
 				// ignored
 				newLength--;
 			}
@@ -1211,7 +1211,7 @@ bool Picker::RemoveIgnored(void)
 
 		i++;
 	}
-	
+
 	// Remove the extra samples from the end of the vector, the Finalize code uses
 	// the sample vector's length for the number of samples to save.
 	int 	diff = m_samples.size() - newLength;

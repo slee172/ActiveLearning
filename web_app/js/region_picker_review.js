@@ -586,11 +586,11 @@ function displayOneslide(sampleArray, slide_num){
 		scale = sampleArray[sample]['scale'];
 		slide = sampleArray[sample]['slide'];
 
-		centX = (sampleArray[sample]['centX'] - (25.0 * scale)) / sampleArray[sample]['maxX'];
-		centY = (sampleArray[sample]['centY'] - (25.0 * scale)) / sampleArray[sample]['maxY'];
+		centX = (sampleArray[sample]['centX'] - (64.0 * scale)) / sampleArray[sample]['maxX'];
+		centY = (sampleArray[sample]['centY'] - (64.0 * scale)) / sampleArray[sample]['maxY'];
 
-		sizeX = (50.0 * scale) / sampleArray[sample]['maxX'];
-		sizeY = (50.0 * scale) / sampleArray[sample]['maxY'];
+		sizeX = (128.0 * scale) / sampleArray[sample]['maxX'];
+		sizeY = (128.0 * scale) / sampleArray[sample]['maxY'];
 		loc = centX+","+centY+","+sizeX+","+sizeY;
 
 		thumbNail = IIPServer+"FIF="+sampleArray[sample]['path']+SlideLocPre+loc+"&WID=100"+SlideLocSuffix;

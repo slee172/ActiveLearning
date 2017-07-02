@@ -48,7 +48,7 @@
 	$slide = $_POST['slide'];
 	$trainSet = $_POST['trainset'];
 
-	write_log("INFO", "trainSet: "+$trainSet);
+	write_log("INFO", "trainSet: ".$trainSet);
 
 	// Get labels for the objects within the viewport
 	if( $trainSet != "none" ) {
