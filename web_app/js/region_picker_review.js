@@ -159,7 +159,7 @@ viewer.addHandler('close', function(event) {
 			sampGrp = document.createElementNS("http://www.w3.org/2000/svg", "g");
 			sampGrp.setAttribute('id', 'sample');
 			annoGrp.appendChild(sampGrp);
-
+			/*
 			ele = document.createElementNS("http://www.w3.org/2000/svg", "rect");
 
 			ele.setAttribute('x', curX - 50);
@@ -172,13 +172,14 @@ viewer.addHandler('close', function(event) {
 			ele.setAttribute('id', 'boundBox');
 
 			sampGrp.appendChild(ele);
-
+			*/
 
 			ele = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
 			ele.setAttribute('points', boundaries[cur_box]);
 			ele.setAttribute('id', 'boundary');
 			ele.setAttribute('stroke', 'yellow');
 			ele.setAttribute('fill', 'none');
+			ele.setAttribute('stroke-width', 4);
 			if( boundaryOn ) {
 				ele.setAttribute('visibility', 'visible');
 				// Make sure toggle button refects the correct action and is enabled

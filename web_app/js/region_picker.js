@@ -575,6 +575,7 @@ function thumbSingleClick(box) {
 		selectedJSON[index]['label'] = 1;
 	}
 	updateClassStatus(index);
+	updateBoundColors();
 };
 
 
@@ -648,9 +649,17 @@ function updateBoundColors() {
 		var bound = document.getElementById("N"+selectedJSON[cell]['id']);
 
 		if( bound != null ) {
-			bound.setAttribute('stroke', 'yellow');
-			bound.setAttribute('fill', 'yellow');
-			bound.setAttribute("fill-opacity", "0.2");
+
+			if( selectedJSON[cell]['label'] === 1 ) {
+				bound.setAttribute('stroke', 'yellow');
+				bound.setAttribute('fill', 'yellow');
+				bound.setAttribute("fill-opacity", "0.2");
+			} else {
+				bound.setAttribute('stroke', 'aqua');
+				bound.setAttribute('fill', 'aqua');
+				bound.setAttribute("fill-opacity", "0.2");
+			}
+
 		}
 	}
 }
