@@ -898,7 +898,7 @@ function cancelSession() {
 		url: "php/cancelSession.php",
 		data: "",
 		success: function() {
-			window.location = "PICKER/index.html";
+			window.location = "PICKER/point_index.html";
 		}
 	});
 }
