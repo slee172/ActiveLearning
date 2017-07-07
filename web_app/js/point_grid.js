@@ -487,7 +487,7 @@ function saveSession() {
 			data: "",
 			success: function(data) {
 
-				window.location = "index.html";
+				window.location = "point_index.html";
 			},
 		});
 
@@ -497,7 +497,7 @@ function saveSession() {
 			data: "",
 			success: function(data) {
 
-				window.location = "index.html";
+				window.location = "point_index.html";
 			},
 		});
 	}
