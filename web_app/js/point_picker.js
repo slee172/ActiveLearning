@@ -832,7 +832,7 @@ function saveTrainingSet() {
 				if( data['status'] === "PASS" ) {
 					console.log("Pos: "+data['posClass']+", Neg: "+data['negClass']);
 					window.alert("Test set saved to: " + data['filename']);
-					window.location = "PICKER/index.html";
+					window.location = "PICKER/point_index.html";
 				} else {
 					window.alert("Unable to save test set");
 				}
@@ -851,7 +851,7 @@ function saveTrainingSet() {
 				if( data['status'] === "PASS" ) {
 					console.log("Pos: "+data['posClass']+", Neg: "+data['negClass']);
 					window.alert("Test set saved to: " + data['filename']);
-					window.location = "PICKER/index.html";
+					window.location = "PICKER/point_index.html";
 				} else {
 					window.alert("Unable to save test set");
 				}
