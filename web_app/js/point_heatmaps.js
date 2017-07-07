@@ -114,7 +114,7 @@ function createRow(rowNo, index) {
 	row.setAttribute('id', 'row'+rowNo);
 	row.setAttribute('class', 'row');
 
-	anchorRef = "viewer.html?slide="+ slide;
+	anchorRef = "point_viewer.html?slide="+ slide;
 
 	// 1st column - Uncertainty heatmap
 	col = document.createElement("div");
