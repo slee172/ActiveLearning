@@ -106,6 +106,7 @@ protected:
 	bool 	PickerReview(const int sock, json_t *obj);
 	bool	PickerReviewSave(const int sock, json_t *obj);
 
+	bool	RemoveDuplicated(void);
 	bool	RemoveIgnored(void);
 };
 
