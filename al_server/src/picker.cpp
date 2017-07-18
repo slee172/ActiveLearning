@@ -1280,7 +1280,7 @@ bool Picker::PickerFinalize(const int sock, json_t *obj)
 		}
 
 		result = RemoveIgnored();
-		result = RemoveDuplicated();
+		//result = RemoveDuplicated();
 
 		if( result ) {
 			result = testSet->Create(m_trainSet[0], m_samples.size(), m_dataset->GetDims(),
