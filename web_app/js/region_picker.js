@@ -509,6 +509,9 @@ function nucleiSelect() {
 						sample['clickX'] = data[7];
 						sample['clickY'] = data[8];
 
+						// check if a sample selected is duplicated or not
+						if (!duplicateCheck(sample['centX'], sample['centY'])){
+
 						// Add the selected nuclei
 						//
 						statusObj.totalSel(statusObj.totalSel() + 1);
@@ -551,12 +554,36 @@ function nucleiSelect() {
 						$(thumbTag).attr("src", thumbNail);
 						updateClassStatus(statusObj.totalSel() - 1);
 						updateBoundColors();
+					}	else {
+					window.alert("Selected sample is duplicted !!");
+					}
 				}
 			}
     	});
 	}
 }
 
+
+//
+// Check if a sample selected is duplicated or not
+// Parameters
+// centroid position (X,Y) of the selected sample
+// Return
+// true: if duplicated
+// false: if not duplicated
+//
+function duplicateCheck(x,y) {
+
+	var centX = x;
+	var centY = y;
+
+	for( i = 0; i < selectedJSON.length; i++ ) {
+			if ((selectedJSON[i]['centX'] == centX) && (selectedJSON[i]['centY'] == centY))
+			return true;
+	}
+
+	return false;
+}
 
 
 //
