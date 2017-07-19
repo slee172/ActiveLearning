@@ -2938,12 +2938,12 @@ void Learner::HeatmapWorkerSRegion(float *slideScores, float *centX, float *cent
 		for(int row = 0; row < fY; row++) {
 			for(int col = 0; col < fX; col++) {
 
-				//grayUncertain.at<uchar>(row, col) = min(255.0 * uncertainMap.at<float>(row, col)/ uncertNorm, 255.0);
+				grayUncertain.at<uchar>(row, col) = min(255.0 * uncertainMap.at<float>(row, col)/ uncertNorm, 255.0);
 				grayClass.at<uchar>(row, col) = min(255.0 * classMap.at<float>(row, col) / *classMax, 255.0);
 			}
 		}
 
-		normalize(uncertainMap, grayUncertain, 0.0, 255.0, cv::NORM_MINMAX, CV_8UC1);
+		//normalize(uncertainMap, grayUncertain, 0.0, 255.0, cv::NORM_MINMAX, CV_8UC1);
 
 
 		string	fqn = m_heatmapPath + "/" + slide + ".jpg",
