@@ -2883,7 +2883,6 @@ void Learner::HeatmapWorkerSRegion(float *slideScores, float *centX, float *cent
 		for(int obj = 0; obj < numObjs; obj++) {
 			curX = ceil(centX[obj] / (float)SREGION_GRID_SIZE);
 			curY = ceil(centY[obj] / (float)SREGION_GRID_SIZE);
-
 			uncertainMap.at<float>(curY, curX) = max(uncertainMap.at<float>(curY, curX), 1 - abs(slideScores[obj]));
 			if( slideScores[obj] >= 0 ) {
 				classMap.at<float>(curY, curX) += 1.0f;
@@ -2915,20 +2914,17 @@ void Learner::HeatmapWorkerSRegion(float *slideScores, float *centX, float *cent
 		// the median is the raw score. (calculated later)
 		minMaxLoc(uncertainMap, uncertMin, uncertMax);
 		minMaxLoc(classMap, classMin, classMax);
-		//normalize(uncertainMap, grayUncertain, 0, 255, cv::NORM_MINMAX, CV_8UC1);
-
 
 		range = *uncertMax - *uncertMin;
-		//gLogger->LogMsg(EvtLogger::Evt_INFO, "range %f", range);
 		memset(uncertHist, 0, HIST_BINS * sizeof(int));
 
 		for(int row = 0; row < fY; row++) {
 			for(int col = 0; col < fX; col++) {
-
 				index = (int)min(uncertainMap.at<float>(row, col) / range * (float)HIST_BINS, (float)(HIST_BINS - 1));
 				uncertHist[index]++;
 			}
 		}
+
 
 		total = 0;
 		for(index = 0; index < HIST_BINS; index++) {
@@ -2936,15 +2932,19 @@ void Learner::HeatmapWorkerSRegion(float *slideScores, float *centX, float *cent
 			if( total > (int)(UNCERT_PERCENTILE * (float)fY * (float)fX) )
 				break;
 		}
+
 		uncertNorm = (float)index / (float)HIST_BINS;
 
 		for(int row = 0; row < fY; row++) {
 			for(int col = 0; col < fX; col++) {
 
-				grayUncertain.at<uchar>(row, col) = min(255.0 * uncertainMap.at<float>(row, col)/ uncertNorm, 255.0);
+				//grayUncertain.at<uchar>(row, col) = min(255.0 * uncertainMap.at<float>(row, col)/ uncertNorm, 255.0);
 				grayClass.at<uchar>(row, col) = min(255.0 * classMap.at<float>(row, col) / *classMax, 255.0);
 			}
 		}
+
+		normalize(uncertainMap, grayUncertain, 255, 0, cv::NORM_MINMAX, CV_8UC1);
+
 
 		string	fqn = m_heatmapPath + "/" + slide + ".jpg",
 				classFqn = m_heatmapPath + "/" + slide + "_class.jpg";
