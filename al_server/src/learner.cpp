@@ -2943,7 +2943,7 @@ void Learner::HeatmapWorkerSRegion(float *slideScores, float *centX, float *cent
 			}
 		}
 
-		normalize(uncertainMap, grayUncertain, 255.0/uncertNorm, 0.0, cv::NORM_MINMAX, CV_8UC1);
+		normalize(uncertainMap, grayUncertain, 0.0, 255.0, cv::NORM_MINMAX, CV_8UC1);
 
 
 		string	fqn = m_heatmapPath + "/" + slide + ".jpg",
