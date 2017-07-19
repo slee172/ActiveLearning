@@ -2881,23 +2881,39 @@ void Learner::HeatmapWorkerSRegion(float *slideScores, float *centX, float *cent
 		vector<float> scoreVec;
 
 		for(int obj = 0; obj < numObjs; obj++) {
+			scoreVec.push_back(1 - abs(slideScores[obj]));
+		}
+
+		sort(scoreVec.begin(), scoreVec.end());
+		// Return the median raw score, min and max should be blurred
+		*uncertMedian = scoreVec[scoreVec.size() / 2];
+
+		for(int obj = 0; obj < numObjs; obj++) {
 			curX = ceil(centX[obj] / (float)SREGION_GRID_SIZE);
 			curY = ceil(centY[obj] / (float)SREGION_GRID_SIZE);
-			uncertainMap.at<float>(curY, curX) = max(uncertainMap.at<float>(curY, curX), 1 - abs(slideScores[obj]));
+			//uncertainMap.at<float>(curY, curX) = max(uncertainMap.at<float>(curY, curX), 1 - abs(slideScores[obj]));
+			float uncertainty = (1 - abs(slideScores[obj]));
+
+			if (uncertainty > *uncertMedian){
+				uncertainMap.at<float>(curY, curX) += 1.0f;
+			}
+
 			if( slideScores[obj] >= 0 ) {
 				classMap.at<float>(curY, curX) += 1.0f;
 			}
 			densityMap.at<float>(curY, curX) += 1.0f;
-			scoreVec.push_back(1 - abs(slideScores[obj]));
 		}
+
 
 		for(int row = 0; row < fY; row++) {
 			for(int col = 0; col < fX; col++) {
 
 				if( densityMap.at<float>(row, col) == 0 ) {
 					classMap.at<float>(row, col) = 0;
+					uncertainMap.at<float>(row, col) = 0;
 				} else {
 					classMap.at<float>(row, col) = classMap.at<float>(row, col) / densityMap.at<float>(row, col);
+					uncertainMap.at<float>(row, col) = uncertainMap.at<float>(row, col) / densityMap.at<float>(row, col);
 				}
 			}
 		}
@@ -2907,43 +2923,44 @@ void Learner::HeatmapWorkerSRegion(float *slideScores, float *centX, float *cent
 		GaussianBlur(classMap, classMap, kernel, 3.5f);
 
 		Mat		img, classImg;
-		int		uncertHist[HIST_BINS], index, total;
-		float	uncertNorm, range;
+		//int		uncertHist[HIST_BINS], index, total;
+		//float	uncertNorm, range;
 
 		// The min and max scores returned are the "blurred" veraion. Only
 		// the median is the raw score. (calculated later)
 		minMaxLoc(uncertainMap, uncertMin, uncertMax);
 		minMaxLoc(classMap, classMin, classMax);
 
-		range = *uncertMax - *uncertMin;
-		memset(uncertHist, 0, HIST_BINS * sizeof(int));
+		// range = *uncertMax - *uncertMin;
+		//
+		// memset(uncertHist, 0, HIST_BINS * sizeof(int));
+		//
+		// for(int row = 0; row < fY; row++) {
+		// 	for(int col = 0; col < fX; col++) {
+		// 		index = (int)min(uncertainMap.at<float>(row, col) / range * (float)HIST_BINS, (float)(HIST_BINS - 1));
+		// 		uncertHist[index]++;
+		// 	}
+		// }
+		//
+		//
+		// total = 0;
+		// for(index = 0; index < HIST_BINS; index++) {
+		// 	total += uncertHist[index];
+		// 	if( total > (int)(UNCERT_PERCENTILE * (float)fY * (float)fX) )
+		// 		break;
+		// }
+
+		//uncertNorm = (float)index / (float)HIST_BINS;
 
 		for(int row = 0; row < fY; row++) {
 			for(int col = 0; col < fX; col++) {
-				index = (int)min(uncertainMap.at<float>(row, col) / range * (float)HIST_BINS, (float)(HIST_BINS - 1));
-				uncertHist[index]++;
-			}
-		}
 
-
-		total = 0;
-		for(index = 0; index < HIST_BINS; index++) {
-			total += uncertHist[index];
-			if( total > (int)(UNCERT_PERCENTILE * (float)fY * (float)fX) )
-				break;
-		}
-
-		uncertNorm = (float)index / (float)HIST_BINS;
-
-		for(int row = 0; row < fY; row++) {
-			for(int col = 0; col < fX; col++) {
-
-				grayUncertain.at<uchar>(row, col) = min(255.0 * uncertainMap.at<float>(row, col)/ uncertNorm, 255.0);
+				grayUncertain.at<uchar>(row, col) = min(255.0 * uncertainMap.at<float>(row, col)/ *uncertMax, 255.0);
 				grayClass.at<uchar>(row, col) = min(255.0 * classMap.at<float>(row, col) / *classMax, 255.0);
 			}
 		}
 
-		//normalize(uncertainMap, grayUncertain, 0.0, 255.0, cv::NORM_MINMAX, CV_8UC1);
+		//normalize(uncertainMap, grayUncertain, 0, 255, cv::NORM_MINMAX, CV_8UC1);
 
 
 		string	fqn = m_heatmapPath + "/" + slide + ".jpg",
@@ -2958,8 +2975,8 @@ void Learner::HeatmapWorkerSRegion(float *slideScores, float *centX, float *cent
 		applyColorMap(grayClass, classImg, COLORMAP_JET);
 		result = imwrite(classFqn.c_str(), classImg, params);
 
-		sort(scoreVec.begin(), scoreVec.end());
+		//sort(scoreVec.begin(), scoreVec.end());
 
 		// Return the median raw score, min and max should be blurred
-		*uncertMedian = scoreVec[scoreVec.size() / 2];
+		//*uncertMedian = scoreVec[scoreVec.size() / 2];
 }
